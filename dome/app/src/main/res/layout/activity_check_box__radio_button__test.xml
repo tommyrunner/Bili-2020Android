@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activtiys.CheckBox_RadioButton_Test">
+
+    <CheckBox
+        android:id="@+id/crb_cb_test1"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="唱"
+        />
+    <CheckBox
+        android:id="@+id/crb_cb_test2"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="跳"
+        />
+
+    <RadioGroup
+        android:id="@+id/crb_rg_test"
+        android:layout_width="200dp"
+        android:layout_height="200dp">
+
+        <RadioButton
+            android:id="@+id/crb_rb_rb1"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="男"
+            />
+        <RadioButton
+            android:id="@+id/crb_rb_rb2"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="女"
+            />
+    </RadioGroup>
+
+
+</LinearLayout>

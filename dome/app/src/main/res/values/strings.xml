@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">My Application</string>
+
+    <string-array name="array_test">
+        <item>列表1</item>
+        <item>列表2</item>
+        <item>列表3</item>
+    </string-array>
+
+</resources>

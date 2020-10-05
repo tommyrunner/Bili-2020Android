@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activtiys.DrawerLayoutTest">
+
+    
+    <Button
+        android:id="@+id/sliLayout_bt_open"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打开"/>
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/sliLayout_layout_test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:id="@+id/siliLayout_layout_content"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+        <LinearLayout
+            android:background="#2196F3"
+            android:layout_gravity="start"
+            android:layout_width="240dp"
+            android:layout_height="match_parent">
+
+        </LinearLayout>
+
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+</LinearLayout>
