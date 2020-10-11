@@ -66,6 +66,7 @@
 ## 5、输入框EditText的使用
 
 + 属性:
+
   + text:输入内容
   + hint：提示文本
   + 自定义样式:
@@ -73,10 +74,13 @@
       + solid:背景颜色
       + corners：边角度
       + stroke:描边
+
 + 事件
-  
+
   + setOnFocusChangeListener：获取失去焦点
+
 + 监听
+
   + addTextChangedListener：内容改变的监听
     + beforeTextChanged：获取并打印
 
@@ -251,6 +255,7 @@ startActivity(new Intent(getApplicationContext(),EditTextTest.class));
 适配器
 
 + ArrayAdapter：简单的数组适配器
+
   + list<String>:数据源
   + 方法
     + notifyDataSetChanged:属性数据
@@ -862,22 +867,23 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
 ## 16、动态进度条xxxBar+线程的使用（下）
 
 + 多种方法
+
   + **Handler+Thread**
-  +  AsyncTask
+  + AsyncTask
   + ThreadPoolExecutor
   + IntentService
   + 简书解释：https://www.jianshu.com/p/2b634a7c49ec
 
 + **Handler+Thread：线程（定时器/监听器）**
-  
+
 + Thread启动线程
-  
+
   + 解析
-  
+
   > 如果启动线程，线程里的所有逻辑代码就会脱离住ui线程。
-  
+
   + 启动模板
-  
+
     ```java
     Thread thread = new Thread(){	//准备一个线程
         @Override
@@ -894,23 +900,23 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
     };
     thread.start();//自动线程
     ```
+
   ```
-  
     > 注意：
     >
     > + 如果要修改ui主线程的组件，得加上Handler的使用。负责会包错
     >
   > > Only the original thread that created a view hierarchy can touch its views.
   ```
-  
+
 + Handler主线程ui机制
-  
+
   + 解析
-  
+
   > 他是通过**Message**传递消息，然后**Handler**接受消息并修改组件。
-  
+
   + 发送消息模板
-  
+
     ```java
     //准备一个消息
     private int MESSAGE_TEST1 = 0x01;
@@ -919,8 +925,8 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
     message.arg1 = MESSAGE_TEST1;
     handler.sendMessage(message);
     ```
+
   ```
-  
     > 注意：
     >
   > + 如果是循环的线程，一定每次循环都得重新new一个新的Message对象
@@ -937,7 +943,6 @@ public class HorizontalListView extends AdapterView<ListAdapter> {
         }
     };
   ```
-  
 
 ## 17、网页显示WebView的使用
 
@@ -1261,6 +1266,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   > 注意：
   >
   > + layout_gravity：设置模块类型
+
   + 配合Fragment使用
 
   ```java
@@ -1270,6 +1276,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   > 注意：
   >
   > + 其实就是利用Fragment的特性，替换Layout
+
   + 属性
 
     + 设置透明颜色
@@ -1438,6 +1445,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
       }
   }
   ```
+
   + 获取根目录
 
   ```java
@@ -1450,6 +1458,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 ## 24、测试网络接口-Vollery网络调用+gson解析json数据（下）
 
 + Vollery：调用接口
+
   + 测试接口：一言开放接口
 
   > https://v1.hitokoto.cn/
@@ -1625,6 +1634,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 + 动画
 
   + 帧动画:连续的播放每一帧的图片
+
     + 准备图片资源
     + 准备帧动画资源:在drawable文件中创建即可
 
@@ -1675,7 +1685,7 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
       + translate：平移动画
 
         ```xml
-  <translate
+        <translate
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:fromXDelta="0%"	
             android:fromYDelta="0%"
@@ -1686,82 +1696,104 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
         
         </translate>
         ```
-      
-        > + fromXDelta：起始X轴位置
-  > + fromYDelta：起始Y轴位置
-        > + toXDelta：到X的位置
-        > + toYDelta：到Y的位置
-        > + duration：中间动画的时间（注意这个不提示，需要手写）
-        > + 注意：这里通常使用%计算单位，面向与父容器的宽高
-      
-      + scale：缩放动画
 
-        ```xml
+        > + fromXDelta：起始X轴位置
+
+  > + fromYDelta：起始Y轴位置
+  >
+  >   > + toXDelta：到X的位置
+  >   > + toYDelta：到Y的位置
+  >   > + duration：中间动画的时间（注意这个不提示，需要手写）
+  >   > + 注意：这里通常使用%计算单位，面向与父容器的宽高
+
+  + scale：缩放动画
+
+  ```xml
   <scale android:fromXScale="100%"
             android:fromYScale="100%"
             android:toXScale="50%"
             android:toYScale="50%"
             android:duration="1000"
             xmlns:android="http://schemas.android.com/apk/res/android" />
-        ```
-      
-        > + fromXScale：初始X大小
-  > + toXScale：缩小后的X大小
-      
-      + rotate：旋转动画
+  ```
 
-        ```xml
+  > + fromXScale：初始X大小
+  > + toXScale：缩小后的X大小
+
+  + rotate：旋转动画
+
+  ```xml
   <rotate android:fromDegrees="0"
                 android:toDegrees="360"
                 android:pivotX="50%"
                 android:pivotY="50%"
         		android:duration="4000"
             xmlns:android="http://schemas.android.com/apk/res/android" />
-        ```
-      
-        > + fromDegrees：初始角度
-  > + toDegrees：旋转后角度
-        > + pivotX、pivotY：X、Y的中心点
-      
-      + alpha：透明度动画
+  ```
 
-        ```xml
+  > + fromDegrees：初始角度
+  > + toDegrees：旋转后角度
+
+  > > + pivotX、pivotY：X、Y的中心点
+
+  + alpha：透明度动画
+
+  ```xml
   <alpha android:fromAlpha="0"
             android:toAlpha="1"
             android:duration="3000"
             xmlns:android="http://schemas.android.com/apk/res/android" />
-        ```
-      
-        > + fromAlpha：初始透明度
-  > + toAlpha：最后透明度
-        > + 注意：这里范围是:0.0-1.0
-  
-+ 属性动画
-
-  + 属性动画简述
-    + 以动画的形式改变位置
-    + 动画结束后组件固定位置
-  + 简单使用
-
-  ```java
-  final ValueAnimator animator;
-  animator = ValueAnimator.ofInt(0,330);
-  animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-      @Override
-      public void onAnimationUpdate(ValueAnimator valueAnimator) {
-          //获取当前的height值
-          //动态更新view的高度
-          mBt.getLayoutParams().height = (int) (Integer)animator.getAnimatedValue();
-          mBt.requestLayout();
-      }
-  });
-  animator.setDuration(1000);
-  animator.start();
   ```
 
-  > + 通过ValueAnimator获取动态值
-  > + 通过动态值，改变组件的物理高度
-  > + 注意：这里的单位是一致的
+  > + fromAlpha：初始透明度
+
+  > + toAlpha：最后透明度
+  >
+  >   > + 注意：这里范围是:0.0-1.0
+
++ 属性动画
+
+  + 方法一:
+
+    + 属性动画简述
+
+      + 以动画的形式改变像素位置
+      + 动画结束后组件固定位置
+
+    + 简单使用
+
+      ```java
+      final ValueAnimator animator;
+      animator = ValueAnimator.ofInt(0,330);
+      animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+          @Override
+          public void onAnimationUpdate(ValueAnimator valueAnimator) {
+              //获取当前的height值
+              //动态更新view的高度
+              mBt.getLayoutParams().height = (int) (Integer)animator.getAnimatedValue();
+              mBt.requestLayout();
+          }
+      });
+      animator.setDuration(1000);
+      animator.start();
+      ```
+
+      > + 通过ValueAnimator获取动态值
+      > + 通过动态值，改变组件的物理高度
+      > + 注意：这里的单位是一致的
+
+  + 方法二:
+
+  ```java
+  ObjectAnimator objectAnimatorX = ObjectAnimator.ofFloat(imageView, "scaleX", 1f,2f);
+  ObjectAnimator objectAnimatorY = ObjectAnimator.ofFloat(imageView, "scaleY", 2f,1f);
+  objectAnimatorX.setDuration(1000);
+  objectAnimatorY.setDuration(1000);
+  objectAnimatorX.start();
+  objectAnimatorY.start();
+  ```
+
+  
 
 ## 28、Animation动画、属性动画（下）
 
@@ -1769,58 +1801,57 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   + 技巧动画
 
 
-      + listView子级动画
+    + listView子级动画
 
 
-          + 创建一个子级的组合动画: list_item_set_anim.xml
+      +  创建一个子级的组合动画: list_item_set_anim.xml
 
-            ```xml
-            <set xmlns:android="http://schemas.android.com/apk/res/android">
-                <translate
-                    android:fromXDelta="10%"
-                    android:toXDelta="0%"
-                    android:duration="500"/>
-                <alpha
-                    android:fromAlpha="0.6"
-                    android:toAlpha="1"
-                    android:duration="500"/>
-            </set>
-            ```
+      ```xml
+      <set xmlns:android="http://schemas.android.com/apk/res/android">
+          <translate
+                     android:fromXDelta="10%"
+                     android:toXDelta="0%"
+                     android:duration="500"/>
+          <alpha
+                 android:fromAlpha="0.6"
+                 android:toAlpha="1"
+                 android:duration="500"/>
+      </set>
+      ```
 
-        + 创建一个layoutAnimation父级动画:list_anim.xml
+      + 创建一个layoutAnimation父级动画:list_anim.xml
 
-          ```xml
-          <layoutAnimation android:animation="@anim/list_item_set_anim"
-              android:animationOrder="normal"
-              android:delay="0.5"
-              xmlns:android="http://schemas.android.com/apk/res/android">
-          
-          </layoutAnimation>
-          ```
+      ```xml
+      <layoutAnimation android:animation="@anim/list_item_set_anim"
+                       android:animationOrder="normal"
+                       android:delay="0.5"
+                       xmlns:android="http://schemas.android.com/apk/res/android">
+      
+      </layoutAnimation>
+      ```
 
-          > + animationOrder:子级显示模式
-          >   + normal：按顺序
-          >   + reverse：倒序
-          >   + random：随机
-          > + delay:每个子级间隔
-          > + animation：子集动画
+       > + animationOrder:子级显示模式
+       >
+       >   >   + normal：按顺序
+       >   >   + reverse：倒序
+       >   >   + random：随机
+       >   >   + delay:每个子级间隔
+       >   >   + animation：子集动画
 
-          + 最后给listView使用
+      + 最后给listView使用
 
-          ```xml
-          android:layoutAnimation="@anim/list_anim"
-          ```
-
-          
+      ```xml
+      android:layoutAnimation="@anim/list_anim"
+      ```
 
     + 跳转Activit使用动画
 
-      ```java
-      Intent intent = new Intent();
-      intent.setClass(getApplicationContext(),Activity.class);
-      startActivity(intent);
-      overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
-      ```
+    ```java
+    Intent intent = new Intent();
+    intent.setClass(getApplicationContext(),Activity.class);
+    startActivity(intent);
+    overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
+    ```
 
       > 注意：
       >
@@ -1828,41 +1859,40 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
       > + overridePendingTransition：参数1：当前页面消失动画，参数2：下个页面进入动画
 
     + 普通模板跳转
+    + 跳转页面
 
-      + 跳转页面
+    ```java
+    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ButtonTest.this).toBundle());
+    ```
 
-      ```java
-      startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ButtonTest.this).toBundle());
-      ```
+    > 这个是默认自带的一个跳转
 
-      > 这个是默认自带的一个跳转
+    + 设置接收动画
 
-      + 设置接收动画
+    ```java
+     getWindow().setEnterTransition(new Explode());//需要接收动画
+    ```
 
-      ```java
-      getWindow().setEnterTransition(new Explode());//需要接收动画
-      ```
+    > 在跳转的界面接受即可
 
-      > 在跳转的界面接受即可
++ *共享元素跳转
 
-    + *共享元素跳转
+  + 跳转界面
 
-      + 跳转界面
+  ```java
+  startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(
+      ButtonTest.this, Pair.<View, String>create(mBt,"btn-image")).toBundle()
+               );
+  ```
 
-      ```java
-      startActivity(intent,ActivityOptions.makeSceneTransitionAnimation(
-          ButtonTest.this, Pair.<View, String>create(mBt,"btn-image")).toBundle()
-                   );
-      ```
+  > + 同样使用ActivityOptions
+  > + Pair：添加共享元素的集合即可:==一个组件和一个共享名==
+  > + 最后.toBundel()
 
-      > + 同样使用ActivityOptions
-      > + Pair：添加共享元素的集合即可:==一个组件和一个共享名==
-      > + 最后.toBundel()
+  + 设置接受动画的组件
 
-      + 设置接受动画的组件
+  ```xml
+  android:transitionName="image"
+  ```
 
-      ```xml
-      android:transitionName="image"
-      ```
-
-      > 接受的组件的共享名
+  > 接受的组件的共享名
