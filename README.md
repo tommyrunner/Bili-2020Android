@@ -1698,27 +1698,30 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
         ```
 
         > + fromXDelta：起始X轴位置
-
-  > + fromYDelta：起始Y轴位置
-  >
-  >   > + toXDelta：到X的位置
-  >   > + toYDelta：到Y的位置
-  >   > + duration：中间动画的时间（注意这个不提示，需要手写）
-  >   > + 注意：这里通常使用%计算单位，面向与父容器的宽高
+        >
+        > + fromYDelta：起始Y轴位置
+        >
+        >   > + toXDelta：到X的位置
+        >   > + toYDelta：到Y的位置
+        >   > + duration：中间动画的时间（注意这个不提示，需要手写）
+        >   > + 注意：这里通常使用%计算单位，面向与父容器的宽高
 
   + scale：缩放动画
 
   ```xml
   <scale android:fromXScale="100%"
-            android:fromYScale="100%"
-            android:toXScale="50%"
-            android:toYScale="50%"
-            android:duration="1000"
-            xmlns:android="http://schemas.android.com/apk/res/android" />
+         android:fromYScale="0%"
+         android:toXScale="80%"
+         android:toYScale="80%"
+         android:pivotY="50%"
+         android:pivotX="50%"
+         android:duration="1000"
+         xmlns:android="http://schemas.android.com/apk/res/android" />
   ```
 
   > + fromXScale：初始X大小
   > + toXScale：缩小后的X大小
+  > + pivotX、pivotY：X、Y的中心点
 
   + rotate：旋转动画
 
@@ -1748,8 +1751,8 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   > + fromAlpha：初始透明度
 
   > + toAlpha：最后透明度
-  >
-  >   > + 注意：这里范围是:0.0-1.0
+
+        > + 注意：这里范围是:0.0-1.0
 
 + 属性动画
 
@@ -1801,78 +1804,76 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   + 技巧动画
 
 
-    + listView子级动画
-
-
-      +  创建一个子级的组合动画: list_item_set_anim.xml
-
-      ```xml
-      <set xmlns:android="http://schemas.android.com/apk/res/android">
-          <translate
-                     android:fromXDelta="10%"
-                     android:toXDelta="0%"
-                     android:duration="500"/>
-          <alpha
-                 android:fromAlpha="0.6"
-                 android:toAlpha="1"
-                 android:duration="500"/>
-      </set>
-      ```
-
-      + 创建一个layoutAnimation父级动画:list_anim.xml
-
-      ```xml
-      <layoutAnimation android:animation="@anim/list_item_set_anim"
-                       android:animationOrder="normal"
-                       android:delay="0.5"
-                       xmlns:android="http://schemas.android.com/apk/res/android">
-      
-      </layoutAnimation>
-      ```
-
-       > + animationOrder:子级显示模式
-       >
-       >   >   + normal：按顺序
-       >   >   + reverse：倒序
-       >   >   + random：随机
-       >   >   + delay:每个子级间隔
-       >   >   + animation：子集动画
-
-      + 最后给listView使用
-
-      ```xml
-      android:layoutAnimation="@anim/list_anim"
-      ```
-
+      + listView子级动画
+    
+      + 创建一个子级的组合动画: list_item_set_anim.xml
+    
+        ```xml
+        <set xmlns:android="http://schemas.android.com/apk/res/android">
+            <translate
+                       android:fromXDelta="10%"
+                       android:toXDelta="0%"
+                       android:duration="500"/>
+            <alpha
+                   android:fromAlpha="0.6"
+                   android:toAlpha="1"
+                   android:duration="500"/>
+        </set>
+        ```
+    
+        + 创建一个layoutAnimation父级动画:list_anim.xml
+    
+        ```xml
+        <layoutAnimation android:animation="@anim/list_item_set_anim"
+                         android:animationOrder="normal"
+                         android:delay="0.5"
+                         xmlns:android="http://schemas.android.com/apk/res/android">
+        
+        </layoutAnimation>
+        ```
+    
+         > + animationOrder:子级显示模式
+         >     >   + normal：按顺序
+         >     >   + reverse：倒序
+         >     >   + random：随机
+         >     >   + delay:每个子级间隔
+         >     >   + animation：子集动画
+    
+        + 最后给listView使用
+    
+        ```xml
+        android:layoutAnimation="@anim/list_anim"
+        ```
+    
     + 跳转Activit使用动画
-
+    
     ```java
     Intent intent = new Intent();
     intent.setClass(getApplicationContext(),Activity.class);
     startActivity(intent);
     overridePendingTransition(R.anim.anim_in,R.anim.anim_out);
     ```
-
+    
       > 注意：
       >
       > + overridePendingTransition方法一定在startActivity后面
       > + overridePendingTransition：参数1：当前页面消失动画，参数2：下个页面进入动画
-
+    
     + 普通模板跳转
     + 跳转页面
-
+    
     ```java
     startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(ButtonTest.this).toBundle());
     ```
-
+    
     > 这个是默认自带的一个跳转
-
+    
     + 设置接收动画
-
+    
     ```java
      getWindow().setEnterTransition(new Explode());//需要接收动画
     ```
-
+    
     > 在跳转的界面接受即可
 
 + *共享元素跳转
@@ -1896,3 +1897,154 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
   ```
 
   > 接受的组件的共享名
+
+## 29、Media媒体播放音乐、视频
+
++ 音乐
+
+  + 播放本地资源
+
+    + 软件资源
+
+    ```java
+    MediaPlayer.create(AnimationTest.this, R.raw.test);
+    ```
+
+    + sd资源
+
+    ```java
+    try {
+        mediaPlayer.setDataSource("../music/samsara.mp3") ;
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    ```
+
+  + 播放网络资源
+
+    ```java
+    mMediaPlayer.setDataSource("http://..../xxx.mp3") ;
+    ```
+
+    > + 使用异步：prepareAsync
+    > + 并缓存完成才能播放：setOnPreparedListener
+
++ 设置
+
+  + 需使用异步缓冲
+
+  ```java
+   mMediaPlayer.prepareAsync() ;
+  ```
+
+  + 缓存完成后
+
+  ```java
+  setOnPreparedListener
+  ```
+
+  + 监听缓存进度+
+
+  ```java
+  setOnBufferingUpdateListener
+  ```
+
+  + 播放完成后
+
+  ```java
+  setOnCompletionListener
+  ```
+
+  + 获取当前进度
+
+  ```java
+  mediaPlayer.getCurrentPosition();
+  ```
+
+  + 获取总播放进度：帧
+
+  ```java
+  mediaPlayer.getDuration()
+  ```
+
+  + 设置进度
+
+  ```java
+  mediaPlayer.seekTo()
+  ```
+
+  + 暂停
+
+  ```java
+   mediaPlayer.pause();
+  ```
+
+  + 继续/播放
+
+  ```java
+   mediaPlayer.start();
+  ```
+
+  + 停止
+
+  ```java
+   mediaPlayer.stop();
+  ```
+
++ 视频
+
+  + 设置资源
+
+    + sd资源
+
+    ```java
+    setVideoURI(Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.test_mp4));
+    ```
+
+    + 静态资源
+
+    ```java
+    setVideoPath("android.resource://"+getPackageName()+"/"+R.raw.test_mp4);
+    ```
+
+  + 播放网络视频
+
+  ```java
+  videoView.setVideoPath("https:/...");
+  ```
+
+  > + 并缓存完成才能播放：setOnPreparedListener
+
+  + 设置
+
+    + 绑定进度条
+
+    ```java
+    //设置进度条
+    MediaController mc = new MediaController(AnimationTest.this);  //注意上下文
+    videoView.setMediaController(mc);
+    ```
+
+    + 缓存完成
+
+    ```java
+    setOnPreparedListener
+    ```
+
+    + 播放结束
+
+    ```java
+    setOnCompletionListener
+    ```
+
+    + 设置进度
+
+    ```java
+    seekTo
+    ```
+
+    + 使用相似...
+
++ 推荐三方播放插件
+
+  + 哔哩哔哩开源:ijkplayer

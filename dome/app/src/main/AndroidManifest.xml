@@ -3,9 +3,8 @@
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -15,23 +14,27 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activtiys.NetworkTest">
+        <activity android:name=".activtiys.MediaTest">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activtiys.AnimationTest">
 
         </activity>
-        <activity android:name=".activtiys.SwipeRefreshLayoutTest">
-
-        </activity>
-        <activity android:name=".activtiys.DrawerLayoutTest"></activity>
-        <activity android:name=".activtiys.ViewPagerTest" >
-
-        </activity>
+        <activity android:name=".activtiys.NetworkTest" />
+        <activity android:name=".activtiys.SwipeRefreshLayoutTest" />
+        <activity android:name=".activtiys.DrawerLayoutTest" />
+        <activity android:name=".activtiys.ViewPagerTest" />
         <activity android:name=".activtiys.FragmentTest" />
         <activity android:name=".activtiys.WebViewTest" />
         <activity android:name=".activtiys.SeekProBarRatingTest" />
         <activity android:name=".activtiys.GridViewTest" />
         <activity android:name=".activtiys.HorizontalListViewTest" />
-        <activity android:name=".activtiys.ListViewTest" >
-        </activity>
+        <activity android:name=".activtiys.ListViewTest" />
         <activity android:name=".activtiys.Dom_Login_Test" />
         <activity android:name=".activtiys.layoutTest" />
 
@@ -43,13 +46,7 @@
         <activity android:name=".activtiys.SpinnerTest" />
         <activity android:name=".activtiys.CheckBox_RadioButton_Test" />
         <activity android:name=".activtiys.EditTextTest" />
-        <activity android:name=".activtiys.ButtonTest" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activtiys.ButtonTest"></activity>
         <activity android:name=".MainActivity" />
     </application>
 

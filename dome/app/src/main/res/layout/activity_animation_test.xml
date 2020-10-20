@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activtiys.AnimationTest">
+
+    <ImageView
+        android:id="@+id/anm_iv_test"
+        android:background="@drawable/anm_test01"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+    <ListView
+        android:id="@+id/anm_lv_list"
+        android:layoutAnimation="@anim/list_anm"
+        android:entries="@array/array_test"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"/>
+
+
+</LinearLayout>
