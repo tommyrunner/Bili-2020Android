@@ -15,7 +15,7 @@ import com.example.myapplication.R;
 
 import java.io.IOException;
 
-public class MediaTest extends AppCompatActivity {
+public class MediaTest extends AppCompatActivity  {
 
     private SeekBar mMediaSbarTest;
     Message message;
@@ -92,8 +92,8 @@ public class MediaTest extends AppCompatActivity {
             }
         });
         //播放视频
-        mMediaVvMp4.setVideoPath("android.resource://"+getPackageName()+"/"+R.raw.test_mp4);
-        mMediaVvMp4.start();
+        mMediaVvMp4.setVideoPath("android.resource://" + getPackageName() + "/" + R.raw.test_mp4);
+//        mMediaVvMp4.start();
         MediaController mediaController = new MediaController(MediaTest.this);
         mMediaVvMp4.setMediaController(mediaController);    //关联视频播放器
     }
@@ -102,4 +102,5 @@ public class MediaTest extends AppCompatActivity {
         mMediaSbarTest = (SeekBar) findViewById(R.id.media_sbar_test);
         mMediaVvMp4 = (VideoView) findViewById(R.id.media_vv_mp4);
     }
+
 }

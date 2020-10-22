@@ -2048,3 +2048,511 @@ FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT;
 + 推荐三方播放插件
 
   + 哔哩哔哩开源:ijkplayer
+
+## 30、SensorManager传感器的使用（隐式跳转）（上）
+
++ 推荐网站
+
+> https://blog.csdn.net/weixin_38379772/article/details/79069494
+
++ 初始化
+
+```java
+SensorManager mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);//获取传感器管理器
+//创建一个SensorManager来获取系统的传感器服务
+SensorManager  sm = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+```
+
++ 继承接口并实现方法
+
+```java
+	implements SensorEventListener{}
+```
+
+```java
+  @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        //监听回调
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+```
+
+
+
++ 获取手机支持的所有传感器
+
+```java
+List<Sensor> sensorList;
+// 实例化传感器管理者
+
+// 得到设置支持的所有传感器的List
+sensorList = mSensorManager.getSensorList(Sensor.TYPE_ALL);
+for (Sensor sensor : sensorList) {
+    Log.d("FDFDS", "onResume: " + sensor.getName());
+}
+```
+
++ 重力感应
+
+  + 注册传感器
+
+  ```java
+  //注册传感器
+  sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_NORMAL);
+  ```
+
+  + 监听判断
+
+  ```java
+  if(sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
+      float X = sensorEvent.values[0];
+      float Y = sensorEvent.values[1];
+      float Z = sensorEvent.values[2];
+      Log.d("FDFDS","x方向的重力加速度\n" + X);
+      Log.d("FDFDS","Y方向的重力加速度\n" + Y);
+      Log.d("FDFDS","Z方向的重力加速度\n" + Z);
+  }
+  ```
+
+  > 就是把重力加速度分解到xyz三个方向上
+
+  
+
++ 光照感应器
+
+  + 注册传感器
+
+  ```java
+  // 为光传感器注册监听器
+  sm.registerListener(this, sm.getDefaultSensor(Sensor.TYPE_LIGHT), SensorManager.SENSOR_DELAY_NORMAL);
+  ```
+
+  + 监听判断
+
+  ```java
+  if(sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT){
+      float X = sensorEvent.values[0];
+      Log.d("FDFDS","光强度为为"+ X );
+  }
+  ```
+
+  > 外部对手机的光照
+
++ 隐式跳转
+
+  + 跳转电话
+
+    ```java
+    Intent Intent =  new Intent(android.content.Intent.ACTION_DIAL, Uri.parse("tel:" + "123123123"));//跳转到拨号界面，同时传递电话号码
+    startActivity(Intent);
+    ```
+
+  + 跳转短信
+
+    ```java
+    //指定联系人
+    Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse("smsto:我是指定联系人"));
+    intent.putExtra("sms_body", "内容");
+    startActivity(intent);
+    ```
+
+  + 跳转相机
+
+    + 申请权限
+
+    ```java
+    <!--拍照-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    ```
+
+    + 动态获取权限...
+    + 隐式跳转
+
+    ```java
+    //跳转相机
+    private void toCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);  //跳转到 ACTION_IMAGE_CAPTURE
+        //判断内存卡是否可用，可用的话就进行存储
+        //putExtra：取值，Uri.fromFile：传一个拍照所得到的文件，fileImg.jpg：文件名
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(),"fileImg.jpg")));
+        startActivityForResult(intent,101); // 101: 相机的返回码参数（随便一个值就行，只要不冲突就好）
+    }
+    ```
+
+    + 6.0以上版本闪退问题
+
+    ```java
+    //跳转相机动态权限
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+    }
+    ```
+
+## 31、SensorManager传感器的使用（指纹+NFC）（下）
+
++ 系统指纹识别
+
+  + 推荐网站:https://www.jb51.net/article/92042.htm
+  + 初始化
+
+  ```java
+  FingerprintManager manager;
+  KeyguardManager mKeyManager;
+  private final static int REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS = 0;
+  private final static String TAG = "finger_log";
+  manager = (FingerprintManager) this.getSystemService(Context.FINGERPRINT_SERVICE);
+  mKeyManager = (KeyguardManager) this.getSystemService(Context.KEYGUARD_SERVICE);
+  ```
+
+  + 识别代码
+
+  ```java
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  public boolean isFinger() {
+  
+      //android studio 上，没有这个会报错 
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+          Toast.makeText(this, "没有指纹识别权限", Toast.LENGTH_SHORT).show();
+          return false;
+      }
+      Log(TAG, "有指纹权限");
+      //判断硬件是否支持指纹识别 
+      if (!manager.isHardwareDetected()) {
+          Toast.makeText(this, "没有指纹识别模块", Toast.LENGTH_SHORT).show();
+          return false;
+      }
+      Log(TAG, "有指纹模块");
+      //判断 是否开启锁屏密码 
+  
+      if (!mKeyManager.isKeyguardSecure()) {
+          Toast.makeText(this, "没有开启锁屏密码", Toast.LENGTH_SHORT).show();
+          return false;
+      }
+      Log(TAG, "已开启锁屏密码");
+      //判断是否有指纹录入 
+      if (!manager.hasEnrolledFingerprints()) {
+          Toast.makeText(this, "没有录入指纹", Toast.LENGTH_SHORT).show();
+          return false;
+      }
+      Log(TAG, "已录入指纹");
+  
+      return true;
+  }
+  
+  CancellationSignal mCancellationSignal = new CancellationSignal();
+  //回调方法 
+  FingerprintManager.AuthenticationCallback mSelfCancelled = new FingerprintManager.AuthenticationCallback() {
+      @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+      @Override
+      public void onAuthenticationError(int errorCode, CharSequence errString) {
+          //但多次指纹密码验证错误后，进入此方法；并且，不能短时间内调用指纹验证 
+          Toast.makeText(MediaTest.this, errString, Toast.LENGTH_SHORT).show();
+          showAuthenticationScreen();
+      }
+  
+      @Override
+      public void onAuthenticationHelp(int helpCode, CharSequence helpString) {
+  
+          Toast.makeText(MediaTest.this, helpString, Toast.LENGTH_SHORT).show();
+      }
+  
+      @Override
+      public void onAuthenticationSucceeded(FingerprintManager.AuthenticationResult result) {
+  
+          Toast.makeText(MediaTest.this, "指纹识别成功", Toast.LENGTH_SHORT).show();
+      }
+  
+      @Override
+      public void onAuthenticationFailed() {
+          Toast.makeText(MediaTest.this, "指纹识别失败", Toast.LENGTH_SHORT).show();
+      }
+  };
+  
+  
+  @RequiresApi(api = Build.VERSION_CODES.M)
+  public void startListening(FingerprintManager.CryptoObject cryptoObject) {
+      //android studio 上，没有这个会报错 
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
+          Toast.makeText(this, "没有指纹识别权限", Toast.LENGTH_SHORT).show();
+          return;
+      }
+      manager.authenticate(cryptoObject, mCancellationSignal, 0, mSelfCancelled, null);
+  
+  
+  }
+  
+  /**
+       * 锁屏密码 
+       */
+  @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+  private void showAuthenticationScreen() {
+  
+      Intent intent = mKeyManager.createConfirmDeviceCredentialIntent("finger", "测试指纹识别");
+      if (intent != null) {
+          startActivityForResult(intent, REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS);
+      }
+  }
+  
+  @Override
+  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+      super.onActivityResult(requestCode, resultCode, data);
+      if (requestCode == REQUEST_CODE_CONFIRM_DEVICE_CREDENTIALS) {
+          // Challenge completed, proceed with using cipher 
+          if (resultCode == RESULT_OK) {
+              Toast.makeText(this, "识别成功", Toast.LENGTH_SHORT).show();
+          } else {
+              Toast.makeText(this, "识别失败", Toast.LENGTH_SHORT).show();
+          }
+      }
+  }
+  
+  private void Log(String tag, String msg) {
+      Log.d(tag, msg);
+  }
+  ```
+
+  + 最后判断使用
+
+  ```java
+  if (isFinger()) {
+      Toast.makeText(MediaTest.this, "请进行指纹识别", Toast.LENGTH_LONG).show();
+      startListening(null);
+  }
+  ```
+
++ NFC感应使用
+
+  + 申请权限
+
+  ```xml
+  <uses-feature
+                android:name="android.hardware.nfc"
+                android:required="true" />
+  <uses-permission android:name="android.permission.NFC" />
+  ```
+
+  + 动态申请权限...
+
+  + 准备一个NFC的工具类
+
+  ```java
+  public class NfcUtils {
+      //nfc
+      public  NfcAdapter mNfcAdapter;
+      public static IntentFilter[] mIntentFilter = null;
+      public static PendingIntent mPendingIntent = null;
+      public static String[][] mTechList = null;
+  
+      public NfcUtils(Activity activity) {
+          mNfcAdapter = NfcCheck(activity);
+          NfcInit(activity);
+      }
+  
+      /**
+       * 检查NFC是否打开
+       */
+      public static NfcAdapter NfcCheck(Activity activity) {
+          NfcAdapter mNfcAdapter = NfcAdapter.getDefaultAdapter(activity);
+          if (mNfcAdapter == null) {
+              Toast.makeText(activity, "设备不支持NFC功能!", Toast.LENGTH_SHORT).show();
+              return null;
+          } else {
+              if (!mNfcAdapter.isEnabled()) {
+                  IsToSet(activity);
+              } else {
+                  Toast.makeText(activity, "NFC功能已打开!", Toast.LENGTH_SHORT).show();
+              }
+          }
+          return mNfcAdapter;
+      }
+  
+      /**
+       * 初始化nfc设置
+       */
+      public static void NfcInit(Activity activity) {
+          Intent intent = new Intent(activity, activity.getClass());
+          intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+          mPendingIntent = PendingIntent.getActivity(activity, 0, intent, 0);
+          //做一个IntentFilter过滤你想要的action 这里过滤的是ndef
+          IntentFilter filter = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+          //如果你对action的定义有更高的要求，比如data的要求，你可以使用如下的代码来定义intentFilter
+          //        IntentFilter filter2 = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
+          //        try {
+          //            filter.addDataType("*/*");
+          //        } catch (IntentFilter.MalformedMimeTypeException e) {
+          //            e.printStackTrace();
+          //        }
+          //        mIntentFilter = new IntentFilter[]{filter, filter2};
+          //        mTechList = null;
+          try {
+              filter.addDataType("*/*");
+          } catch (IntentFilter.MalformedMimeTypeException e) {
+              e.printStackTrace();
+          }
+          mTechList = new String[][]{{MifareClassic.class.getName()},
+                  {NfcA.class.getName()}};
+          //生成intentFilter
+          mIntentFilter = new IntentFilter[]{filter};
+      }
+  
+  
+      /**
+       * 读取NFC的数据
+       */
+      public static String readNFCFromTag(Intent intent) throws UnsupportedEncodingException {
+          Parcelable[] rawArray = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+          if (rawArray != null) {
+              NdefMessage mNdefMsg = (NdefMessage) rawArray[0];
+              NdefRecord mNdefRecord = mNdefMsg.getRecords()[0];
+              if (mNdefRecord != null) {
+                  String readResult = new String(mNdefRecord.getPayload(), "UTF-8");
+                  return readResult;
+              }
+          }
+          return "";
+      }
+  
+  
+      /**
+       * 往nfc写入数据
+       */
+      public static void writeNFCToTag(String data, Intent intent) throws IOException, FormatException {
+          Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+          Ndef ndef = Ndef.get(tag);
+          ndef.connect();
+          NdefRecord ndefRecord = null;
+          if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+              ndefRecord = NdefRecord.createTextRecord(null, data);
+          }
+          NdefRecord[] records = {ndefRecord};
+          NdefMessage ndefMessage = new NdefMessage(records);
+          ndef.writeNdefMessage(ndefMessage);
+      }
+  
+      /**
+       * 读取nfcID
+       */
+      public static String readNFCId(Intent intent) throws UnsupportedEncodingException {
+          Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+          String id = ByteArrayToHexString(tag.getId());
+          return id;
+      }
+  
+      /**
+       * 将字节数组转换为字符串
+       */
+      private static String ByteArrayToHexString(byte[] inarray) {
+          int i, j, in;
+          String[] hex = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F"};
+          String out = "";
+  
+          for (j = 0; j < inarray.length; ++j) {
+              in = (int) inarray[j] & 0xff;
+              i = (in >> 4) & 0x0f;
+              out += hex[i];
+              i = in & 0x0f;
+              out += hex[i];
+          }
+          return out;
+      }
+  
+      private static void IsToSet(final Activity activity) {
+          AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+          builder.setMessage("是否跳转到设置页面打开NFC功能");
+  //        builder.setTitle("提示");
+          builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                  goToSet(activity);
+                  dialog.dismiss();
+              }
+          });
+          builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                  dialog.dismiss();
+              }
+          });
+          builder.create().show();
+      }
+  
+      private static void goToSet(Activity activity) {
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BASE) {
+              // 进入设置系统应用权限界面
+              Intent intent = new Intent(Settings.ACTION_SETTINGS);
+              activity.startActivity(intent);
+              return;
+          } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {// 运行系统在5.x环境使用
+              // 进入设置系统应用权限界面
+              Intent intent = new Intent(Settings.ACTION_SETTINGS);
+              activity.startActivity(intent);
+              return;
+          }
+      }
+  }
+  ```
+
+  + 初始化
+
+  ```java
+   NfcUtils  nfcUtils = new NfcUtils(this);
+  ```
+
+  + 检测是否拥有/开启nfc
+
+  ```java
+  //设定intentfilter和tech-list。如果两个都为null就代表优先接收任何形式的TAG action。也就是说系统会主动发TAG intent。
+  if (nfcUtils.mNfcAdapter != null) {
+      nfcUtils.mNfcAdapter.enableForegroundDispatch(this, NfcUtils.mPendingIntent, NfcUtils.mIntentFilter, NfcUtils.mTechList);
+  }else {
+      Toast.makeText(this, "调用失败", Toast.LENGTH_SHORT).show();
+  }
+  ```
+
+  > 一般在生命周期的onResume方法中判断
+
+  + 优化清空缓存
+
+  ```java
+  @Override
+  protected void onDestroy() {
+      super.onDestroy();
+      nfcUtils.mNfcAdapter = null;
+  }
+  @Override
+  protected void onPause() {
+      super.onPause();
+      if (nfcUtils.mNfcAdapter != null) {
+          nfcUtils.mNfcAdapter.disableForegroundDispatch(this);
+      }
+  }
+  ```
+
+  + 传感回调
+
+  ```java
+  //在onNewIntent中处理由NFC设备传递过来的intent
+  @Override
+  protected void onNewIntent(Intent intent) {
+      super.onNewIntent(intent);
+      Log.e(TAG, "--------------NFC-------------" );
+      processIntent(intent);
+  }
+  ```
+
+  + 获取数据
+
+  ```java
+  //  这块的processIntent() 就是处理卡中数据的方法
+  public void processIntent(Intent intent) {
+      Parcelable[] rawmsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);//获取数据
+      Toast.makeText(this, "读取成功!", Toast.LENGTH_SHORT).show();
+  }
+  ```
+
+  

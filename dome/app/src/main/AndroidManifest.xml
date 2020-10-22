@@ -3,8 +3,13 @@
     package="com.example.myapplication">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!--拍照-->
+    <uses-permission android:name="android.permission.CAMERA" />
 
     <application
         android:allowBackup="true"
@@ -14,17 +19,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activtiys.MediaTest">
+        <activity android:name=".activtiys.SensorManagerTest">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activtiys.AnimationTest">
 
         </activity>
+        <activity android:name=".activtiys.MediaTest">
+
+        </activity>
+        <activity android:name=".activtiys.AnimationTest"></activity>
         <activity android:name=".activtiys.NetworkTest" />
         <activity android:name=".activtiys.SwipeRefreshLayoutTest" />
         <activity android:name=".activtiys.DrawerLayoutTest" />
@@ -46,7 +53,7 @@
         <activity android:name=".activtiys.SpinnerTest" />
         <activity android:name=".activtiys.CheckBox_RadioButton_Test" />
         <activity android:name=".activtiys.EditTextTest" />
-        <activity android:name=".activtiys.ButtonTest"></activity>
+        <activity android:name=".activtiys.ButtonTest" />
         <activity android:name=".MainActivity" />
     </application>
 
