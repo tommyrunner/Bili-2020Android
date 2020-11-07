@@ -9,10 +9,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 拍照 -->
     <uses-permission android:name="android.permission.CAMERA" />
 
-
     <uses-feature
         android:name="android.hardware.nfc"
         android:required="true" />
+
     <uses-permission android:name="android.permission.NFC" />
 
     <application
@@ -23,19 +23,22 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activtiys.SensorManager2Test">
+        <service
+            android:name=".activtiys.service.MyService"
+            android:enabled="true"
+            android:exported="true"></service>
 
+        <activity android:name=".activtiys.service.ServiceTset2" />
+        <activity android:name=".activtiys.service.ServiceTest1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-        <activity android:name=".activtiys.SensorManagerTest">
-
-        </activity>
-        <activity android:name=".activtiys.MediaTest"></activity>
+        <activity android:name=".activtiys.SensorManager2Test" />
+        <activity android:name=".activtiys.SensorManagerTest" />
+        <activity android:name=".activtiys.MediaTest" />
         <activity android:name=".activtiys.AnimationTest" />
         <activity android:name=".activtiys.NetworkTest" />
         <activity android:name=".activtiys.SwipeRefreshLayoutTest" />

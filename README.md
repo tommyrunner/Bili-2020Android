@@ -2555,4 +2555,215 @@ for (Sensor sensor : sensorList) {
   }
   ```
 
+
+## 32、Service服务+广播的简单使用（理解）（上）
+
++ 理解service和广播
+  + 四大组件之一
+    + activity（活动/界面）
+    + service（服务）
+    + Broadcast Receive（广播）
+    + Content Provider（内容提供者）
+  + 可以比作为线程的逻辑
+  + 服务与全软件界面
+  + 广播发送全软件界面
++ 构造
+
+```java
+package com.example.t_world.service;
+
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+public class MyService extends Service {
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(BasDataUtil.LOG_TOAST, "服务销毁;");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        Log.d(BasDataUtil.LOG_TOAST, "服务创建----Create");
+    }
+
+    public MyService() {
+        Log.d(BasDataUtil.LOG_TOAST, "实例化MyService服务");
+    }
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(BasDataUtil.LOG_TOAST, "服务----绑定成功");
+        // TODO: Return the communication channel to the service.
+        //返回到服务的通信通道。
+        return new PlayMusicBinder();
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        try {
+            String activityKey = intent.getStringExtra("data");
+            if (activityKey!=null){
+             //intent传入的参数接收
+            }
+        }catch (Exception e){
+            Log.d(BasDataUtil.LOG_TOAST,"播放音乐服务--发广播/收广播错误:"+e.toString());
+        }
+
+        return super.onStartCommand(intent, flags, startId);
+    }
+    
+    @Override
+    public boolean onUnbind(Intent intent) {
+        Log.d(BasDataUtil.LOG_TOAST, "解绑MyService成功");
+        return super.onUnbind(intent);
+    }
+}
+```
+
+> 注意:
+>
+> + 启动服务调用的是onCreate
+>
+> + 关闭服务调用的是:onDestroy
+>
+> + 绑定服务调用的是onBind
+>
+> + 取消绑定调用的是:onUnbind
+>
+> + intent传参数跳转服务，需要接收使用:onStartCommand
+>
+>   ```java
+>   Intent intent = new Intent(this, MyService.class);  
+>   startService(intent);
+>   ```
+
+## 33、service服务+广播的简单使用（交互）（下）
+
++ **服务(Service)向外互动**
+
+  + 发送广播
+
+    + **服务准备代码**
+
+    ```java
+    private LocalBroadcastManager localBroadcastManager;	//准备发送广播控制器
+    @Override
+    public void onCreate() {
+        localBroadcastManager = LocalBroadcastManager.getInstance(this);	//实例化
+        super.onCreate();
+        Log.d(BasDataUtil.LOG_TOAST, "服务----Create");
+    }
+    //--------发送广播
+    Intent intent = new Intent("com.example.Service");	//准备一个intent：并实例一个标识:可使用自己的包名
+    intent.putExtra("dataKey", "dataKey的值");//需要传入的参数
+    localBroadcastManager.sendBroadcast(intent);	//使用广播发送器发送
+    ```
+
+    + **接收广播**
+
+    ```java
+    private LocalReceiver localReceiver;
+    private IntentFilter intentFilter;
+    ///--提供广播监听
+    //监听广播
+    class LocalReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            try {
+                String dataKey = intent.getStringExtra("dataKey");
+                //判定获取是否成功
+            }catch (Exception e){
+                Log.d(BasDataUtil.LOG_TOAST,"播放接收广播错误："+e.toString());
+            }
+    
+        }
+    }
+    //--在该页注册广播
+    @Override
+    protected void onStart() {
+        //注册本地广播监听器
+        intentFilter = new IntentFilter();	//实例
+        intentFilter.addAction("com.example.Service");//绑定标识
+        localReceiver = new LocalReceiver();	//实例
+        //广播
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(PlayListActivity.this);//通过getInstance()得到LocalBroadcastManager的实例;
+        localBroadcastManager.registerReceiver(localReceiver, intentFilter);//启动广播接收
+        super.onStart();
+    }
+    
+    
+    ```
+
++ **页面向服务(Service)交互**
+
+  + ​	绑定服务，就可以交互 
+
+    + Service准备代码
+
+    ```java
+    //准备一个给页面调用的类
+    class PlayMusicBinder extends Binder {//例如这里可以直接播放，暂停，继续...各种操作
+    
+        public PlayMusicBinder() {
+            //初始化控制器
+            mediaPlayer = new MediaPlayer();
+    
+        }
+    	public String  getData(){
+            return "这是服务中的方法";
+        }
+    
+    }
+    //准备一个IBinder，与页面交互:绑定立马调用
+    @Override
+    public IBinder onBind(Intent intent) {
+        Log.d(BasDataUtil.LOG_TOAST, "服务----绑定成功");
+        // TODO: Return the communication channel to the service.
+        return new PlayMusicBinder();	//返回服务中的Binder类
+    }
+    
+    ```
+
+    + 页面绑定服务(Service)并，使用服务的方法
+
+    ```java
+    PlayMusicBinder playMusicBinder;
+    //--准备一个接收服务管理器:绑定后直接调用
+    private ServiceConnection connection = new ServiceConnection() {
+        /**
+             * 连接到服务
+             * @param name
+             * @param service
+             */
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            //连接服务成功
+            playMusicBinder = (PlayMusicBinder) service;//这里就直接获取了playMusicBinder控制
+        }
+    
+        /**
+             * 断开连接
+             * @param name
+             */
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+        }
+    };
+    //--绑定服务
+    @Override
+    protected void onStart() {
+        //        绑定服务
+        bindService(new Intent(getApplicationContext(), AudioService.class), connection, Service.BIND_AUTO_CREATE);
+        super.onStart();
+    }
+    //---这个时候就可以直接使用了
+    playMusicBinder.getData();
+    ```
+
+    
+
   

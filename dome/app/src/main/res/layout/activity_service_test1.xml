@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activtiys.service.ServiceTest1">
+
+    <Button
+        android:id="@+id/service_bt_init"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="初始化音乐"/>
+    <Button
+        android:id="@+id/service_bt_play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="播放音乐"/>
+    <Button
+        android:id="@+id/service_bt_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="停止"/>
+    <Button
+        android:id="@+id/service_bt_test2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="跳转test2"/>
+
+</LinearLayout>
