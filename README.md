@@ -2764,6 +2764,121 @@ public class MyService extends Service {
     playMusicBinder.getData();
     ```
 
-    
 
-  
+## 34、Android中的数据存储/传输（本地数据)（上)
+
++ 变量
+
+```java
+int i;
+String s;
+```
+
+> 使用范围：当前代码块
+
++ 全局变量
+
+```java
+public static int i;
+public static String s;
+```
+
+> 使用范围：跨类可以使用
+
++ **跳转界面传入数据**
+
+  + 传入基础数据
+
+    + 跳转传入数据
+
+    ```java
+    Intent intent  =new Intent(getApplicationContext(), Activity2.class);
+    intent.putExtra("key01","value01");
+    startActivity(intent);
+    ```
+
+    + 接受传入的数据
+
+    ```java
+    Intent intent= getIntent();
+    Log.d(BaseData.LOG_TOAST,intent.getStringExtra("key01"));
+    ```
+
+    > 这里注意获取可能为null 
+
+  + 传入对象
+
+    + 准备一个对象类
+
+    ```java
+    public class User implements Serializable {
+        String name;
+        int id;
+        ...
+    ```
+
+    > 该类需要继承 implements Serializable ，才能被存入
+
+    + 跳转传入数据
+
+    ```java
+    Intent intent  =new Intent(getApplicationContext(), ServiceTset2.class);
+    User user = new User("12",1);
+    Bundle bundle = new Bundle();
+    bundle.putSerializable("user", user);
+    intent.putExtras(bundle);
+    startActivity(intent);
+    ```
+
+    > 注意：
+    >
+    > + 这里使用Bundle来存入数据，使用方法和intent类似
+    > + 它相当于一个集合
+
+    + 接受传入的数据
+
+    ```java
+    Bundle intent= getIntent().getExtras();
+    User user= (User) intent.get("user");
+    Log.d(BaseData.LOG_TOAST,user.toString());
+    ```
+
+    > 使用Bundle设置就得使用Bundle接受
+
++ **使用SharedPreferences实现本地储存**
+
+  > 使用范围：全软件,并与软件共存（因为它存在软件里的文件夹里(data/data/shared_perfs/文件名.xml)）
+
+  + **初始化**
+
+  ```java
+  SharedPreferences sharedPreferences = getSharedPreferences("testSp",MODE_PRIVATE);
+  SharedPreferences.Editor editor = sharedPreferences.edit();
+  ```
+
+  > + testSp：文件名.xml
+  >
+  > + 模式
+  >   + MODE_PRIVATE:默认模式，**创建的文件只能由 调用的应用程序（或者共享相同用户ID的应用程序）访问**。
+  > + sharedPreferences：用来读取文件中的键值
+  > + editor：用于写入文件中的键值
+
+  + **使用SharedPreferences**
+
+    > 它的数据会一直保存只能自己删除或卸载软件
+
+    + **存入/更新**
+
+    ```java
+    editor.putString("key","testKey");
+    editor.apply();
+    ```
+
+    + 删除
+
+    ```java
+    editor.remove("key");//根据键删除
+    editor.clear();//清空
+    ```
+
+    

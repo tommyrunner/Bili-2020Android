@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -49,6 +50,8 @@ public class ServiceTset2 extends AppCompatActivity implements View.OnClickListe
      */
     private Button mServiceBt2Play;
 
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,9 +79,19 @@ public class ServiceTset2 extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initView() {
+        sp = getSharedPreferences(BaseData.SP_TEST,MODE_PRIVATE);
+        editor = sp.edit();
         mServiceTvName = (TextView) findViewById(R.id.service_tv_name);
         mServiceBt2Play = (Button) findViewById(R.id.service_bt2_play);
         mServiceBt2Play.setOnClickListener(this);
+//        Bundle extras = getIntent().getExtras();
+//        UserEntity userEntity  = (UserEntity) extras.getSerializable("userValue");
+//        if (userEntity!=null)
+//        Log.d(BaseData.LOG_TOAST,userEntity.getName());
+
+        String name =  sp.getString("testSp_userName","未找到");
+        String pwd = sp.getString("testSp_userPwd","未找到");
+        Log.d(BaseData.LOG_TOAST,name+",密码"+pwd);
     }
 
     @Override

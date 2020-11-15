@@ -4,6 +4,7 @@ import android.app.Service;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.R;
+import com.example.myapplication.utils.BaseData;
 
 public class ServiceTest1 extends AppCompatActivity implements View.OnClickListener {
     /**
@@ -30,6 +32,9 @@ public class ServiceTest1 extends AppCompatActivity implements View.OnClickListe
      * 跳转test2
      */
     private Button mServiceBtTest2;
+
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onDestroy() {
@@ -81,6 +86,9 @@ public class ServiceTest1 extends AppCompatActivity implements View.OnClickListe
         mServiceBtStop.setOnClickListener(this);
         mServiceBtTest2 = (Button) findViewById(R.id.service_bt_test2);
         mServiceBtTest2.setOnClickListener(this);
+        sp = getSharedPreferences(BaseData.SP_TEST,MODE_PRIVATE);
+        editor = sp.edit();
+
     }
 
     @Override
@@ -98,7 +106,19 @@ public class ServiceTest1 extends AppCompatActivity implements View.OnClickListe
                 playMusicBinder.stopMusic();
                 break;
             case R.id.service_bt_test2:
-                startActivity(new Intent(getApplicationContext(), ServiceTset2.class));
+                Intent intent  =new Intent(getApplicationContext(), ServiceTset2.class);
+//                UserEntity userEntity = new UserEntity();
+//                userEntity.setName("张三");
+//                userEntity.setPwd("333");
+//                userEntity.setAge("33");
+//
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("userValue",userEntity);
+//                intent.putExtras(bundle);
+                startActivity(intent);
+                editor.putString("testSp_userName","张三");
+                editor.putString("testSp_userPwd","333");
+                editor.apply();
                 break;
         }
     }
