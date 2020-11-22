@@ -88,7 +88,6 @@ public class ServiceTest1 extends AppCompatActivity implements View.OnClickListe
         mServiceBtTest2.setOnClickListener(this);
         sp = getSharedPreferences(BaseData.SP_TEST,MODE_PRIVATE);
         editor = sp.edit();
-
     }
 
     @Override

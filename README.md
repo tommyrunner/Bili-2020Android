@@ -2882,3 +2882,204 @@ public static String s;
     ```
 
     
+
+## 35、Android中的数据存储/传输（Sqlite)（下)
+
++ 数据库的概率
+
+  + 可以拿表格办公软件理解
+  + 一个数据库包含多个表格
+  + 一个表格包含多个属性
+  + 一个属性有多个数据
+
++ 简单使用**SQLiteOpenHelper**
+
+  + 首先准备一个Helpter的实例类(**创建的数据库文件：data/data/软件软件/databases/数据库名.db**)
+
+  ```java
+  public class SqlitHelper extends SQLiteOpenHelper {
+      private static  String SQL_NAME = "testSql.db";
+      private static int  SQL_VERSION = 1;
+      public SqlitHelper(@Nullable Context context) {
+          super(context, SQL_NAME, null, SQL_VERSION);
+      }
+  
+      //注意这个方法只执行一次，所以在这创建表格
+      @Override
+      public void onCreate(SQLiteDatabase db) {
+          String sql = "create table tb_user(name varchar(20),pwd varchar(20))";
+          db.execSQL(sql);
+      }
+      //注意这个是数据库更新才调用
+      @Override
+      public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+  
+      }
+  }
+  ```
+
+  > 注意：
+  >
+  > + 这个可以当成模板，不需要死记
+  > + onCreate：注意这个方法只执行一次，所以在这创建表格
+
+  + 数据库的查删修
+
+    + 插入
+
+    ```java
+    SqlitHelper sqlitHelper = new SqlitHelper(this);
+    SQLiteDatabase db = sqlitHelper.getWritableDatabase();
+    ContentValues values = new ContentValues();
+    values.put("name","张三");
+    values.put("pwd","123");
+    db.insert("tb_user",null,values);
+    ```
+
+    + 查询
+
+    ```java
+    SqlitHelper sqlitHelper = new SqlitHelper(this);
+    SQLiteDatabase db = sqlitHelper.getWritableDatabase();
+    //创建游标对象
+    Cursor cursor = db.query("tb_user", new String[]{"name","pwd"}, null, null, null, null, null);
+    //利用游标遍历所有数据对象
+    while(cursor.moveToNext()){
+        String name = cursor.getString(cursor.getColumnIndex("name"));
+        String pwd = cursor.getString(cursor.getColumnIndex("pwd"));
+        Log.d(BaseData.LOG_TOAST,"数据库:"+name+","+pwd);
+    }
+    ```
+
+    + 删除：db.delete()...
+
++ **使用Ormlite插件调用sqlite数据库**
+
+  + 减少了sql语句操作
+
+  + 增加了对类的面向对象
+
+  + 简单使用
+
+    + 准备一个数据库的实体类
+
+    ```java
+    @DatabaseTable(tableName = "tb_user2")//创建表名
+    public class UserEntity implements Serializable {
+        @DatabaseField()
+        String name;
+        @DatabaseField()
+        String pwd;
+        @DatabaseField()
+        String age;
+    ...
+    ```
+
+    > 注意：
+    >
+    > + DatabaseTable：注释写法，说明这个类对应表格名
+    > + DatabaseField：这个属性就是一个键
+    >
+    > + 其他写法
+    >
+    > ```
+    > @ DatabaseField注解可以有以下字段：
+    > 
+    > columnName 列名，未指定时为字段名
+    > dataType DataType类的类型的字段。通常的类型是从Java类的领域，并不需要指定。
+    > defaultValue 默认值
+    > width 宽度 默认是0，表示不限
+    > canBeNull 是否允许为空，默认为true
+    > id 主键 默认为false
+    > generatedId 自增长的主键 默认值是false
+    > generatedIdSequence 字符串名称的序列号 类同generatedId，但您可以指定序列的名称使用。默认为null
+    > foreign 外键，默认为false,字段不能是一个原始类型。在外键对象的类中，必须要有一个ID字段（ID， generatedId，generatedIdSequence）
+    > useGetSet 应用get和set方法访问。默认为false
+    > unknownEnumName 表示该字段是一个Java的枚举类型
+    > throwIfNull 如果为空值，抛出一个异常 默认为false
+    > persisted 是否在数据库中存储这个领域 默认为true
+    > format 指定某一特定领域的信息格式,如指定日期字符串的格式
+    > unique 唯一约束，默认为false
+    > uniqueCombo 唯一行，该行内所有字段成为一个唯一约束，如有firstName 和 lastName两个字段，为"张"和"梅"，那么该表内不可再插             入"张"，"梅"，   但你可插入"张"，"全梅"。
+    > index 是否建立索引 默认为false
+    > uniqueIndex 唯一索引 默认为false
+    > indexName 为这一领域的索引添加一个名字
+    > uniqueIndexName 为这一领域的索引添加一个唯一的名字
+    > foreignAutoRefresh 当查询到一个外键对象时，是否自动刷新 如 Order表中有Account外键对象，当返回Order的记录时是否也返回Account的记录，           默认为false
+    > maxForeignAutoRefreshLevel 为了防止无限递归或者无限循环时 需要用到该属性设置自动刷新的最高级别
+    > allowGeneratedIdInsert 插入一个ID字段是否覆盖它生成的ID的对象 默认为false
+    > columnDefinition 定义列，默认情况下，数据库类型是用于自动生成所需的SQL来创建列，所以该属性并不常用
+    > foreignAutoCreate 在插入一个有外键对象的对象时，是否自动插入这个外键对象
+    > version 行版本 当一个对象被更新，以防止数据损坏多个实体时更新在同一时间进行的保护
+    > ```
+
+    + 实例**OrmLiteSqliteOpenHelper**
+
+    ```java
+    public class SqlitOrmHelper extends OrmLiteSqliteOpenHelper {
+        private static String SQL_NAME = "testSql.db";
+        private static int SQL_VERSION = 1;
+    
+        public SqlitOrmHelper(Context context) {
+            super(context, SQL_NAME, null, SQL_VERSION);
+        }
+    
+        @Override
+        public void onCreate(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource) {
+           //创建表格
+            try {
+                TableUtils.createTable(connectionSource, UserEntity.class);
+            } catch (java.sql.SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    
+        @Override
+        public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i1) {
+    
+        }
+    }
+    ```
+
+    + 查/删/改操作
+
+      + 首先获取它自带的dao文件
+
+      ```java
+      SqlitOrmHelper sqlitOrmHelper = new SqlitOrmHelper(this);
+      try {
+          Dao<UserEntity, ?> dao = sqlitOrmHelper.getDao(UserEntity.class);
+      }catch (SQLException e) {
+          e.printStackTrace();
+      }
+      ```
+
++ 插入
+      
+
+```java
+      Dao<UserEntity, ?> dao = sqlitOrmHelper.getDao(UserEntity.class);
+      UserEntity userEntity = new UserEntity();
+      userEntity.setName("张三orm");
+      userEntity.setPwd("张三orm");
+      userEntity.setAge("2");
+      dao.create(userEntity);
+```
+
++ 查询
+      
+
+```java
+      List<UserEntity> userEntities = dao.queryForAll();
+      Log.d(BaseData.LOG_TOAST,"查询成功："+userEntities.toString());
+```
+
++ 删除:复杂操作
+      
+
+```java
+      DeleteBuilder<UserEntity, ?> userEntityDeleteBuilder = dao.deleteBuilder();
+      userEntityDeleteBuilder.where().eq("name","张三orm");
+      userEntityDeleteBuilder.delete();
+```
+

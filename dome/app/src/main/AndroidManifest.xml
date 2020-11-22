@@ -23,18 +23,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.DayNight.NoActionBar"
         android:usesCleartextTraffic="true">
-        <service
-            android:name=".activtiys.service.MyService"
-            android:enabled="true"
-            android:exported="true"></service>
+        <activity android:name=".activtiys.SqliteTest">
 
-        <activity android:name=".activtiys.service.ServiceTset2" />
-        <activity android:name=".activtiys.service.ServiceTest1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+
+        <service
+            android:name=".activtiys.service.MyService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity android:name=".activtiys.service.ServiceTset2" />
+        <activity android:name=".activtiys.service.ServiceTest1">
+
         </activity>
         <activity android:name=".activtiys.SensorManager2Test" />
         <activity android:name=".activtiys.SensorManagerTest" />
